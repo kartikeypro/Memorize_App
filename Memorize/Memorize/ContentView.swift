@@ -29,14 +29,16 @@ struct ContentView: View {
                 HStack{
                     transport
 //                    add
-                    Spacer()
+                    Spacer(minLength: 75)
 //                    remove
                     face
-                    Spacer()
+                    Spacer(minLength: 75)
                     tech
+                    Spacer(minLength: 80)
                     add
-                    Spacer()
+                    Spacer(minLength: 80)
                     remove
+                    Spacer(minLength: 15)
                 }.padding(.horizontal)
                 .font(.largeTitle)
             }
