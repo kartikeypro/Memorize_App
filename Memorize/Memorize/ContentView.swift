@@ -8,18 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-
+    
+    @ObservedObject var viewModel : EmojiMemoryGame
     
     var body: some View {
-        VStack{
-                Text("Memorize!").font(.largeTitle).foregroundColor(.black)
-                ScrollView
-                {
-                    LazyVGrid(columns:[GridItem(.adaptive(minimum: 75))]){
-                        ForEach(emojis.shuffled()[0..<emojiCount],id:\.self) {emoji in cardView(Content: emoji).aspectRatio(2/3,contentMode: .fit)}
+//        VStack{
+            //Text("Memorize!").font(.largeTitle).foregroundColor(.black)
+            ScrollView
+            {
+                LazyVGrid(columns:[GridItem(.adaptive(minimum: 75))]){
+                    ForEach(viewModel.cards) {card in cardView(card: card)
+                        .aspectRatio(2/3,contentMode: .fit)
+                        .onTapGesture {
+                            viewModel.choose(card)                }
+                        
                     }
                 }
-                Spacer()
+            }.padding()
+            Spacer()
 //            ScrollView(.horizontal){
 //                HStack{
 ////                    transport
@@ -37,8 +43,8 @@ struct ContentView: View {
 //                }.padding(.horizontal)
 //                .font(.largeTitle)
 //            }
-        }.padding(.horizontal)
-        .foregroundColor(.red)
+//        }.padding(.horizontal)
+//        .foregroundColor(.red)
     }
     
 //    var transport: some View{
@@ -84,18 +90,23 @@ struct ContentView: View {
 }
 //This function is used to define the rectangle containers
 struct cardView:View {
+    let card : MemoryGame<String>.Card
     
     var body: some View{
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 20)
-                if isFaceUp {
+                if card.isFaceUp {
                     shape
                         .fill()
                         .foregroundColor(.white)
                     shape
                         .strokeBorder(lineWidth: 3)
-                    Text(Content)
+                        .foregroundColor(.red)
+                    Text(card.content)
                         .font(.largeTitle)
+                }
+                else if card.isMatch{
+                    shape.opacity(0)
                 }
                 else{
                     shape
@@ -110,7 +121,8 @@ struct cardView:View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let game=EmojiMemoryGame()
+        ContentView(viewModel: game)
             .preferredColorScheme(.light)
     }
 }
